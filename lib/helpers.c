@@ -28,6 +28,7 @@ ssize_t write_(int fd, const void *buf, size_t nbyte)
         n = write(fd, buf, nbyte);
         if (n == -1)
             return -1;
+        buf += n;
         res += n;
         nbyte -= n;
     } while (n > 0 && nbyte > 0);
