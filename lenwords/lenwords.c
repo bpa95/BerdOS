@@ -32,14 +32,22 @@ main()
                 ws++;
             } else {
                 ll = sprintf(len, "%d", (int) ws);
-                write_(STDOUT_FILENO, len, ll);
-                write_(STDOUT_FILENO, &delim, (size_t) 1);
+                if (write_(STDOUT_FILENO, len, ll) == -1) {
+                    exwitherr();
+                }
+                if (write_(STDOUT_FILENO, &delim, (size_t) 1) == -1) {
+                    exwitherr();
+                }
                 ws = 0;
             }
         }
     } while (n > 0);
     ll = sprintf(len, "%d", (int) ws);
-    write_(STDOUT_FILENO, len, ll);
-    write_(STDOUT_FILENO, &delim, (size_t) 1);
+    if (write_(STDOUT_FILENO, len, ll) == -1) {
+        exwitherr();
+    }
+    if (write_(STDOUT_FILENO, &delim, (size_t) 1) == -1) {
+        exwitherr();
+    }
     return 0;
 }
