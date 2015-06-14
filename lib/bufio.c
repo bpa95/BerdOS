@@ -1,9 +1,18 @@
 #include "bufio.h"
 #include <stdlib.h>
 
-struct buf_t *buf_new(size_t capacity)
+struct buf_t* buf_new(size_t capacity)
 {
-    return NULL;
+    struct buf_t* buf = (struct buf_t*) malloc(sizeof(struct buf_t));
+    if (buf == NULL) {
+        return NULL;
+    }
+    buf->capacity = capacity;
+    buf->size = 0;
+    if ((buf->data = malloc(capacity)) == NULL) {
+        return NULL;
+    }
+    return buf;
 }
 
 void buf_free(struct buf_t * buf)
