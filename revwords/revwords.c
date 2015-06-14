@@ -4,49 +4,34 @@
 #include <stdlib.h>
 
 #define DELIM ' '
+#define BUFSIZE 4096
 
-void exwitherr()
+int main()
 {
-    char *er = strerror(errno);
-    write_(STDERR_FILENO, er, sizeof(char) * strlen(er));
-    exit(1);
-}
-
-void reverse(char* word, size_t ws)
-{
-    int i;
-    for (i = 0; i < ws / 2; i++) {
-        char ch = word[i];
-        word[i] = word[ws - i - 1];
-        word[ws - i - 1] = ch;
-    }
-}
-
-main()
-{
-    char buf[4096];
-    size_t n;
-    char word[4096];
-    size_t ws = 0;
-    do {
-        n = read_until(STDIN_FILENO, buf, sizeof(buf), DELIM);
+    char buf[BUFSIZE];
+    while (1) {
+        int n = read_until(STDIN_FILENO, buf, BUFSIZE, ' ');
         if (n == -1) {
-            exwitherr();
+            perror("can't read");
+            return -1;
         }
-
-        int i;
-        for (i = 0; i < n; i++) {
-            if (buf[i] != DELIM) {
-                word[ws++] = buf[i];
-            } else {
-                reverse(word, ws);
-                word[ws++] = DELIM;
-                write_(STDOUT_FILENO, word, ws);
-                ws = 0;
-            }
+        if (n == 0) {
+            return 0;
         }
-    } while (n > 0);
-    reverse(word, ws);
-    write_(STDOUT_FILENO, word, ws);
-    return 0;
+        int f = 0;
+        if (buf[n - 1] == ' ') {
+            n--;
+            f = 1;
+        }
+        int i, j;
+        for (i = 0, j = n - 1; i < j; i++, j--) {
+            char ch = buf[i];
+            buf[i] = buf[j];
+            buf[j] = ch;
+        }
+        if (write_(STDOUT_FILENO, buf, n + f) == -1) {
+            perror("can't write");
+            return -1;
+        }
+    }
 }

@@ -3,3 +3,6 @@ all: ../lib/libhelpers.so
 
 ../lib/libhelpers.so:
 	$(MAKE) -C ../lib
+
+clean:
+	rm -f ./cat

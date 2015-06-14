@@ -1,5 +1,8 @@
-all: ../lib/libhelpers.so
-	gcc revwords.c -I../lib/ -L../lib/ -lhelpers -o revwords
+all: libhelpers.so
+	gcc revwords.c -o revwords -L../lib/ -I../lib/ -Wl,-rpath=../lib -lhelpers
 
-../lib/libhelpers.so:
+libhelpers.so:
 	$(MAKE) -C ../lib
+
+clean:
+	rm -f ./revwords
