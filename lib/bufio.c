@@ -10,6 +10,7 @@ struct buf_t* buf_new(size_t capacity)
     buf->capacity = capacity;
     buf->size = 0;
     if ((buf->data = malloc(capacity)) == NULL) {
+        free(buf);
         return NULL;
     }
     return buf;
@@ -17,17 +18,18 @@ struct buf_t* buf_new(size_t capacity)
 
 void buf_free(struct buf_t * buf)
 {
-
+    free(buf->data);
+    free(buf);
 }
 
 size_t buf_capacity(struct buf_t * buf)
 {
-    return 0;
+    return buf->capacity;
 }
 
 size_t buf_size(struct buf_t * buf)
 {
-    return 0;
+    return buf->size;
 }
 
 ssize_t buf_fill(int fd, struct buf_t * buf, size_t required)
