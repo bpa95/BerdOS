@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef DEBUG
+    #define ABORT_IF_NULL if (buf==NULL) abort();
+#else
+    #define ABORT_IF_NULL
+#endif
+
 struct buf_t* buf_new(size_t capacity)
 {
     struct buf_t* buf = (struct buf_t*) malloc(sizeof(struct buf_t));
@@ -19,25 +25,33 @@ struct buf_t* buf_new(size_t capacity)
 
 void buf_free(struct buf_t * buf)
 {
+    ABORT_IF_NULL
     free(buf->data);
     free(buf);
 }
 
 size_t buf_capacity(struct buf_t * buf)
 {
+    ABORT_IF_NULL
     return buf->capacity;
 }
 
 size_t buf_size(struct buf_t * buf)
 {
+    ABORT_IF_NULL
     return buf->size;
 }
 
 ssize_t buf_fill(int fd, struct buf_t * buf, size_t required)
 {
+    ABORT_IF_NULL
     size_t *size = &buf->size;
     size_t *capacity = &buf->capacity;
     void* data = buf->data;
+    if (*capacity < required) {
+        buf = NULL;
+        ABORT_IF_NULL
+    }
     while (*size < required) {
         ssize_t r = read(fd, data + *size, *capacity - *size);
         if (r == -1) {
@@ -53,6 +67,7 @@ ssize_t buf_fill(int fd, struct buf_t * buf, size_t required)
 
 ssize_t buf_flush(int fd, struct buf_t * buf, size_t required)
 {
+    ABORT_IF_NULL
     size_t *size = &buf->size;
     void* data = buf->data;
     ssize_t tw = 0;
