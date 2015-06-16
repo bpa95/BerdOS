@@ -34,7 +34,7 @@ size_t buf_size(struct buf_t * buf)
 
 ssize_t buf_fill(int fd, struct buf_t * buf, size_t required)
 {
-    return 0;
+    return 0;   
 }
 
 ssize_t buf_flush(int fd, struct buf_t * buf, size_t required)

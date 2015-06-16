@@ -2,6 +2,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 ssize_t read_(int fd, void *buf, size_t nbyte)
 { 
@@ -67,7 +69,11 @@ int spawn(const char * file, char * const argv [])
     if (c_pid == -1) {
         return -1;
     } else if (c_pid == 0) {
+        int dev_null = open("/dev/null", O_WRONLY);
+        int def_err = dup(STDERR_FILENO);
+        dup2(dev_null, STDERR_FILENO);
         execvp(file, argv);
+        dup2(STDERR_FILENO, def_err);
         return 0;
     } else {
         int status = 0;
